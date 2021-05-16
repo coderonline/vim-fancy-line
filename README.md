@@ -11,6 +11,22 @@ compatible.
 
 ![screenshot](https://git.entwicklerseite.de/vim-fancy-line/plain/screenshot.png)
 
+
+## TLDR;
+
+Key features:
+
+* Compatible (at least) with all pre-installed colorschemes
+* Pure Vimscript, no overhead (this is critical with statuslines, because textlock is active during stl updates)
+* Displays the tab bar in a different color for the `root` user: `:highlight Error`
+
+
+## Configuration
+
+* It should be considered to add `showtabline=2` to the vimrc
+* It looks nicer with proper fillchars, e.g. `fillchars+=eob:\ ,vert:\`
+
+
 ## Installation
 
 This should be sufficient:

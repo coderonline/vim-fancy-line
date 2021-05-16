@@ -36,17 +36,17 @@ augroup MAX_FANCYLINE
         let w:cterm_bg=synIDattr(synIDtrans(hlID(a:highlight_group)), 'bg', 'cterm')
         let w:cterm_fg=synIDattr(synIDtrans(hlID(a:highlight_group)), 'fg', 'cterm')
 
-        if(w:gui_bg ==# '') | let w:gui_bg = 'NONE' | endif
-        if(w:gui_fg ==# '') | let w:gui_fg = 'NONE' | endif
+        if(w:gui_bg ==# '')   | let w:gui_bg   = 'NONE' | endif
+        if(w:gui_fg ==# '')   | let w:gui_fg   = 'NONE' | endif
         if(w:cterm_bg ==# '') | let w:cterm_bg = 'NONE' | endif
         if(w:cterm_fg ==# '') | let w:cterm_fg = 'NONE' | endif
 
         let l:retval=a:highlight_group.'_invert'
 
-        if(1 == synIDattr(synIDtrans(hlID(a:highlight_group)), 'reverse'))
-            exec 'highlight! default '.l:retval.' ctermfg='.w:cterm_fg.' ctermbg=NONE'.' guifg='.w:gui_fg.' guibg=NONE'
+        if(0 == synIDattr(synIDtrans(hlID(a:highlight_group)), 'reverse', 'cterm'))
+            exec 'highlight! '.l:retval.' ctermfg='.w:cterm_bg.' ctermbg=0 guifg='.w:gui_bg.' guibg=NONE'
         else
-            exec 'highlight! default '.l:retval.' ctermfg='.w:cterm_bg.' ctermbg=NONE'.' guifg='.w:gui_bg.' guibg=NONE'
+            exec 'highlight! '.l:retval.' ctermfg='.w:cterm_fg.' ctermbg=0 guifg='.w:gui_fg.' guibg=NONE'
         endif
 
         return l:retval
@@ -84,6 +84,7 @@ augroup MAX_FANCYLINE
                     \ .' '
                     \ .'%#'.l:invert_group.'#'
                     \ .g:status_sym_end
+                    \ .'%#Ignore#'
                     \ .'%<'
                     \ .''
                     \ .'%='
@@ -155,12 +156,12 @@ augroup MAX_FANCYLINE
         set tabline=%!UpdateTabline(g:group_tabline)
 
         " otherwise 'bold' can mess up icon sizes and I do not know why
-        highlight! StatusLine cterm=reverse
+        " highlight! StatusLine cterm=reverse
         " exec 'highlight! User3 guifg=#D2A032 guibg='.l:fgcolor
 
         " workaround for VertSplit looking as a repeated slash, because its an
         " italic bar...
-        highlight! VertSplit gui=NONE cterm=NONE term=NONE
+        " highlight! VertSplit gui=NONE cterm=NONE term=NONE
     endfunction
     call ApplyColorScheme()
 
