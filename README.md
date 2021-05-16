@@ -9,7 +9,7 @@ look similar to powerline, but that is no wonder, because the `` symbol
 is the only one, which used to be available in code page 437 and thus broadly
 compatible.
 
-![screenshot](/screenshot.png)
+![screenshot](https://git.entwicklerseite.de/vim-fancy-line/plain/screenshot.png)
 
 ## Installation
 
