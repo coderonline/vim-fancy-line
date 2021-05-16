@@ -1,0 +1,22 @@
+*vim-fancy-line.txt*   A plugin to make the status and tab line look nicer
+
+==============================================================================
+USAGE INSTRUCTIONS                                   *vim-recently-used-usage*
+
+
+While this plugin does not have any configuration options in Vim right now,
+it is necessary to configure the operating system to get the best use out
+of it. It is recommend to install powerline-console-fonts and set them in
+`/etc/vconsole.conf` so that the linux terminal displays the bars correctly.
+
+
+CONSOLE FONTS
+
+To test ca console font try this (it will not survive a reboot as long
+as it is not copied to vconsole.conf):
+
+$ setfont /usr/share/kbd/consolefont/ter-powerline-v16n.psf.gz
+$ showconsolefont
+
+
+vim:tw=78:ts=8:ft=help:norl:
