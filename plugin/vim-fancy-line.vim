@@ -5,7 +5,7 @@ augroup MAX_FANCYLINE
     set laststatus=2  | " required by AirLine and Lightline, without status line does not appear until a window split
 
 
-    if (&term ==? 'linux' && &termguicolors == 0)
+    if (&term ==? 'linux')
         let g:group_active         = 'StatusLineTerm'
         let g:group_inactive       = 'StatusLineTermNC'
         let g:group_tabline        = 'TabLine'
@@ -31,25 +31,23 @@ augroup MAX_FANCYLINE
     " this function reverts foreground color and background color of a given
     " highlight group and returns the name of a newly created _invert group
     function! CreateInvertGroup(highlight_group)
+        let w:gui_bg=synIDattr(synIDtrans(hlID(a:highlight_group)), 'bg', 'gui')
+        let w:gui_fg=synIDattr(synIDtrans(hlID(a:highlight_group)), 'fg', 'gui')
+        let w:cterm_bg=synIDattr(synIDtrans(hlID(a:highlight_group)), 'bg', 'cterm')
+        let w:cterm_fg=synIDattr(synIDtrans(hlID(a:highlight_group)), 'fg', 'cterm')
 
-        if(synIDattr(synIDtrans(hlID(a:highlight_group)), 'reverse')==0)
-            let w:color=synIDattr(hlID(a:highlight_group), 'bg#')
-            let w:termcolor=synIDattr(hlID(a:highlight_group), 'bg')
-        else
-            let w:color=synIDattr(hlID(a:highlight_group), 'fg#')
-            let w:termcolor=synIDattr(hlID(a:highlight_group), 'fg')
-        endif
+        if(w:gui_bg ==# '') | let w:gui_bg = 'NONE' | endif
+        if(w:gui_fg ==# '') | let w:gui_fg = 'NONE' | endif
+        if(w:cterm_bg ==# '') | let w:cterm_bg = 'NONE' | endif
+        if(w:cterm_fg ==# '') | let w:cterm_fg = 'NONE' | endif
 
         let l:retval=a:highlight_group.'_invert'
-        if(exists('w:color') && w:color ==# '')
-            let w:color = 'NONE'
-        endif
-        if(exists('w:termcolor') && w:termcolor ==# '')
-            let w:termcolor = 'NONE'
-        endif
 
-        silent! exec 'highlight! '.l:retval.' guifg='.w:color
-        silent! exec 'highlight! '.l:retval.' ctermfg='.w:termcolor
+        if(1 == synIDattr(synIDtrans(hlID(a:highlight_group)), 'reverse'))
+            exec 'highlight! default '.l:retval.' ctermfg='.w:cterm_fg.' ctermbg=NONE'.' guifg='.w:gui_fg.' guibg=NONE'
+        else
+            exec 'highlight! default '.l:retval.' ctermfg='.w:cterm_bg.' ctermbg=NONE'.' guifg='.w:gui_bg.' guibg=NONE'
+        endif
 
         return l:retval
     endfunction
