@@ -1,6 +1,6 @@
 ﻿scriptencoding utf-8
 
-augroup MAX_FANCYLINE
+augroup MAX_FANCY_LINE
     set noshowmode    | " mode would otherwise be shown twice- in lightline and below. We want to deactivate one.
     set laststatus=2  | " required by AirLine and Lightline, without status line does not appear until a window split
 
@@ -108,7 +108,9 @@ augroup MAX_FANCYLINE
 
     function! UpdateTabline(highlight_group)
         let l:invert_group = CreateInvertGroup(a:highlight_group)
-        let l:git_branch   = FugitiveHead()
+        let l:git_branch   = systemlist('git branch --show-current')[0]
+        let l:git_branch   = v:shell_error ? "" : g:status_sym_sep_start . ' ' . g:symbol_branch . ' ' . l:git_branch
+
         return ''
                     \ .'%#'.a:highlight_group.'#'
                     \ .g:symbol_screen_edge
@@ -117,7 +119,7 @@ augroup MAX_FANCYLINE
                     \ .'%-2( %)'
                     \ .'%{fnamemodify(getcwd(-1), ":~")}'
                     \ .' '
-                    \ .'%{FugitiveHead() == "" ? "" : g:status_sym_sep_start." ".g:symbol_branch." ".FugitiveHead()}'
+                    \ .l:git_branch
                     \ .' '
                     \ .'%#'.l:invert_group.'#'
                     \ .g:status_sym_end
