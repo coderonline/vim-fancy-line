@@ -108,8 +108,8 @@ augroup MAX_FANCY_LINE
 
     function! UpdateTabline(highlight_group)
         let l:invert_group = CreateInvertGroup(a:highlight_group)
-        let l:git_branch   = systemlist('git branch --show-current')[0]
-        let l:git_branch   = v:shell_error ? "" : g:status_sym_sep_start . ' ' . g:symbol_branch . ' ' . l:git_branch
+        let l:git_branch   = systemlist('git branch --show-current')
+        let l:git_branch   = (v:shell_error || l:git_branch == []) ? "" : g:status_sym_sep_start . ' ' . g:symbol_branch . ' ' . l:git_branch[0]
 
         return ''
                     \ .'%#'.a:highlight_group.'#'
