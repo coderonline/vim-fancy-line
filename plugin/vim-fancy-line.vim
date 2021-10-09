@@ -5,6 +5,7 @@ augroup MAX_FANCY_LINE
     set laststatus=2  | " required by AirLine and Lightline, without status line does not appear until a window split
 
 
+
     if (&term ==? 'linux')
         let g:group_active         = 'StatusLineTerm'
         let g:group_inactive       = 'StatusLineTermNC'
@@ -27,6 +28,14 @@ augroup MAX_FANCY_LINE
         let g:symbol_screen_edge       = '░'
     endif
 
+    """ shell calls are expensive. We only want to read the name of a Git
+    """ branch if there is a chance, that it has changed.
+    let s:git_branch   = ""
+    function! s:updateGitBranchName()
+        let s:git_branch = systemlist('git branch --show-current')
+        let s:git_branch = (v:shell_error || s:git_branch == []) ? "" : g:status_sym_sep_start . ' ' . g:symbol_branch . ' ' . s:git_branch[0]
+    endfunction
+    autocmd DirChanged,BufRead * call s:updateGitBranchName()
 
     " this function reverts foreground color and background color of a given
     " highlight group and returns the name of a newly created _invert group
@@ -108,8 +117,6 @@ augroup MAX_FANCY_LINE
 
     function! UpdateTabline(highlight_group)
         let l:invert_group = CreateInvertGroup(a:highlight_group)
-        let l:git_branch   = systemlist('git branch --show-current')
-        let l:git_branch   = (v:shell_error || l:git_branch == []) ? "" : g:status_sym_sep_start . ' ' . g:symbol_branch . ' ' . l:git_branch[0]
 
         return ''
                     \ .'%#'.a:highlight_group.'#'
@@ -119,7 +126,7 @@ augroup MAX_FANCY_LINE
                     \ .'%-2( %)'
                     \ .'%{fnamemodify(getcwd(-1), ":~")}'
                     \ .' '
-                    \ .l:git_branch
+                    \ .s:git_branch
                     \ .' '
                     \ .'%#'.l:invert_group.'#'
                     \ .g:status_sym_end
