@@ -10,22 +10,24 @@ augroup MAX_FANCY_LINE
         let g:group_active         = 'StatusLineTerm'
         let g:group_inactive       = 'StatusLineTermNC'
         let g:group_tabline        = 'TabLine'
-        let g:status_sym_start         = ''
-        let g:status_sym_end           = '▶'
-        let g:status_sym_sep_start     = '│'
-        let g:status_sym_sep_end       = '│'
-        let g:symbol_branch            = ''
-        let g:symbol_screen_edge       = '░'
+        let g:status_sym_start     = ''
+        let g:status_sym_end       = '▶'
+        let g:status_sym_sep_start = '│'
+        let g:status_sym_sep_end   = '│'
+        let g:symbol_branch        = ''
+        let g:symbol_screen_edge   = '░'
     else
         let g:group_active         = 'StatusLine'
         let g:group_inactive       = 'StatusLineNC'
         let g:group_tabline        = 'TabLine'
-        let g:status_sym_start         = ''
-        let g:status_sym_end           = ''
-        let g:status_sym_sep_start     = '│'
-        let g:status_sym_sep_end       = '│'
-        let g:symbol_branch            = ''
-        let g:symbol_screen_edge       = '░'
+        let g:status_sym_start     = nr2char(0xE0B6)
+        let g:status_sym_end       = nr2char(0xE0B4)
+        " let g:status_sym_start     = ''
+        " let g:status_sym_end       = ''
+        let g:status_sym_sep_start = '│'
+        let g:status_sym_sep_end   = '│'
+        let g:symbol_branch        = ''
+        let g:symbol_screen_edge   = '░'
     endif
 
     """ shell calls are expensive. We only want to read the name of a Git
@@ -123,7 +125,7 @@ augroup MAX_FANCY_LINE
                     \ .g:symbol_screen_edge
                     \ .' '
                     \ .'%#'.a:highlight_group.'#'
-                    \ .'%-2( %)'
+                    \ .'%-2(  %)'
                     \ .'%{fnamemodify(getcwd(-1), ":~")}'
                     \ .' '
                     \ .s:git_branch
