@@ -3,11 +3,12 @@
 augroup MAX_FANCY_LINE
     set noshowmode    | " mode would otherwise be shown twice- in lightline and below. We want to deactivate one.
     set laststatus=2  | " required by AirLine and Lightline, without status line does not appear until a window split
+    highlight! TabLineFill guibg=NONE
 
     if (&term ==? 'linux')
         let g:group_active         = 'StatusLineTerm'
         let g:group_inactive       = 'StatusLineTermNC'
-        let g:group_tabline        = 'TabLine'
+        let g:group_tabline        = 'TabLineSel'
         let g:status_sym_start     = ''
         let g:status_sym_end       = '▶'
         let g:status_sym_sep_start = '│'
@@ -18,10 +19,10 @@ augroup MAX_FANCY_LINE
         let g:group_active         = 'StatusLine'
         let g:group_inactive       = 'StatusLineNC'
         let g:group_tabline        = 'TabLine'
-        "let g:status_sym_start     = nr2char(0xE0B6)
-        "let g:status_sym_end       = nr2char(0xE0B4)
-        let g:status_sym_start     = ''
-        let g:status_sym_end       = ''
+        let g:status_sym_start     = nr2char(0xE0B6)
+        let g:status_sym_end       = nr2char(0xE0B4)
+        " let g:status_sym_start     = ''
+        " let g:status_sym_end       = ''
         let g:status_sym_sep_start = '│'
         let g:status_sym_sep_end   = '│'
         let g:symbol_branch        = ''
