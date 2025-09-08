@@ -5,12 +5,15 @@ augroup MAX_FANCY_LINE
     set laststatus=2  | " required by AirLine and Lightline, without status line does not appear until a window split
     highlight! TabLineFill guibg=NONE
 
+
+
     if (&term ==? 'linux')
         let g:group_active         = 'StatusLineTerm'
         let g:group_inactive       = 'StatusLineTermNC'
-        let g:group_tabline        = 'TabLineSel'
+        let g:group_tabline        = 'StatusLineTerm'
         let g:status_sym_start     = ''
-        let g:status_sym_end       = '▶'
+        let g:status_sym_end       = ''
+        " let g:status_sym_end       = '▶'
         let g:status_sym_sep_start = '│'
         let g:status_sym_sep_end   = '│'
         let g:symbol_branch        = ''
@@ -18,7 +21,7 @@ augroup MAX_FANCY_LINE
     else
         let g:group_active         = 'StatusLine'
         let g:group_inactive       = 'StatusLineNC'
-        let g:group_tabline        = 'TabLine'
+        let g:group_tabline        = 'StatusLine'
         let g:status_sym_start     = nr2char(0xE0B6)
         let g:status_sym_end       = nr2char(0xE0B4)
         " let g:status_sym_start     = ''
@@ -41,22 +44,22 @@ augroup MAX_FANCY_LINE
     " this function reverts foreground color and background color of a given
     " highlight group and returns the name of a newly created _invert group
     function! CreateInvertGroup(highlight_group)
+
         let w:gui_bg=synIDattr(synIDtrans(hlID(a:highlight_group)), 'bg', 'gui')
         let w:gui_fg=synIDattr(synIDtrans(hlID(a:highlight_group)), 'fg', 'gui')
         let w:cterm_bg=synIDattr(synIDtrans(hlID(a:highlight_group)), 'bg', 'cterm')
         let w:cterm_fg=synIDattr(synIDtrans(hlID(a:highlight_group)), 'fg', 'cterm')
 
-        if(w:gui_bg ==# '')   | let w:gui_bg   = 'NONE' | endif
-        if(w:gui_fg ==# '')   | let w:gui_fg   = 'NONE' | endif
-        if(w:cterm_bg ==# '') | let w:cterm_bg = 'NONE' | endif
-        if(w:cterm_fg ==# '') | let w:cterm_fg = 'NONE' | endif
+        if(w:gui_bg ==# '')   | let w:gui_bg   = g:normal_fg     | endif
+        if(w:gui_fg ==# '')   | let w:gui_fg   = g:normal_bg     | endif
+        if(w:cterm_bg ==# '') | let w:cterm_bg = g:normal_termfg | endif
+        if(w:cterm_fg ==# '') | let w:cterm_fg = g:normal_termbg | endif
 
         let l:retval=a:highlight_group.'_invert'
-
-        if(0 == synIDattr(synIDtrans(hlID(a:highlight_group)), 'reverse', 'cterm'))
-            exec 'highlight! '.l:retval.' ctermfg='.w:cterm_bg.' ctermbg=0 guifg='.w:gui_bg.' guibg=NONE'
+        if(0 == synIDattr(synIDtrans(hlID(a:highlight_group)), 'reverse', 'ctermfg'))
+            exec 'highlight! '.l:retval.' ctermfg='.w:cterm_bg.' ctermbg='.w:cterm_fg.' guifg='.w:gui_bg.' guibg='.w:gui_fg
         else
-            exec 'highlight! '.l:retval.' ctermfg='.w:cterm_fg.' ctermbg=0 guifg='.w:gui_fg.' guibg=NONE'
+            exec 'highlight! '.l:retval.' ctermfg='.w:cterm_fg.' ctermbg='.w:cterm_bg.' guifg='.w:gui_fg.' guibg='.w:gui_fg
         endif
 
         return l:retval
@@ -78,7 +81,6 @@ augroup MAX_FANCY_LINE
                     \  't'      : 'terminal'
                     \ }, mode(), mode())
         return ''
-                    \ .'%#StatusLineHighlight#'
                     \ .'%#'.a:highlight_group.'#'
                     \ .g:symbol_screen_edge
                     \ .'%{&buftype != "" ? " ".&buftype : ""}'
@@ -94,24 +96,19 @@ augroup MAX_FANCY_LINE
                     \ .' '
                     \ .'%#'.l:invert_group.'#'
                     \ .g:status_sym_end
-                    \ .'%#Ignore#'
                     \ .'%<'
-                    \ .''
                     \ .'%='
-                    \ .''
                     \ .'%#'.l:invert_group.'#'
                     \ .g:status_sym_start
-                    \ .'%#'.a:highlight_group.'#'.' '
+                    \ .'%#'.a:highlight_group.'#'
                     \ .'%{&buftype == "" ? "" : &buftype." ".g:status_sym_sep_end." "}'
-                    \ .'%{&filetype == "" ?  "" :&filetype." ".g:status_sym_sep_end." "}'
+                    \ .'%{&filetype == "" ?  "" : " ".&filetype." ".g:status_sym_sep_end." "}'
                     \ .'%{&spell ? &spelllang." ".g:status_sym_sep_end : ""}'
                     \ .'%{&fileencoding =~ "^$\\|^utf\-8$" ? "" : &fileencoding." ".g:status_sym_sep_end." "}'
                     \ .'%{&fileformat =~ "^$\\|^unix$" ? "" : &fileformat." ".g:status_sym_sep_end}'
-                    \ .' '
-                    \ .'%cx%-l: '
-                    \ .g:status_sym_sep_end
-                    \ .' '
-                    \ .'%p%% '
+                    \ .' %c '
+                    \ .g:status_sym_sep_start
+                    \ .' %-l/%L '
                     \ .g:symbol_screen_edge
                     \ .'%#NonText#'
     endfunction
@@ -123,7 +120,6 @@ augroup MAX_FANCY_LINE
                     \ .'%#'.a:highlight_group.'#'
                     \ .g:symbol_screen_edge
                     \ .' '
-                    \ .'%#'.a:highlight_group.'#'
                     \ .'%-2(  %)'
                     \ .'%{fnamemodify(getcwd(-1), ":~")}'
                     \ .' '
@@ -138,8 +134,7 @@ augroup MAX_FANCY_LINE
                     \ .'%(%#'.a:highlight_group.'#%)'
                     \ .' '
                     \ .'%-2(%)'
-                    \ .'%(%#'.a:highlight_group.'#%)'
-                    \ .'%(%{v:servername} %{v:this_session}%)'
+                    \ .'%(%{fnamemodify(v:servername, ":t")} %{v:this_session}%)'
                     \ .g:status_sym_sep_end.' '
                     \ .'%-3(%)'
                     \ .'%#'.a:highlight_group.'#'
@@ -157,6 +152,23 @@ augroup MAX_FANCY_LINE
     endif
 
     function! ApplyColorScheme()
+        exec "highlight! StatusLine   guifg=NONE gui=NONE cterm=NONE"
+        exec "highlight! StatusLineNC guifg=NONE gui=NONE cterm=NONE"
+        " exec "highlight! TabLine      guifg=NONE guibg=NONE"
+        " workaround for VertSplit looking as a repeated slash, because its an
+        " italic bar...
+        " highlight! VertSplit gui=NONE cterm=NONE term=NONE
+
+        let g:normal_bg=synIDattr(synIDtrans(hlID("Normal")), 'bg', 'gui')
+        let g:normal_fg=synIDattr(synIDtrans(hlID("Normal")), 'fg', 'gui')
+        let g:normal_termbg=synIDattr(synIDtrans(hlID("Normal")), 'bg', 'cterm')
+        let g:normal_termfg=synIDattr(synIDtrans(hlID("Normal")), 'fg', 'cterm')
+        if(g:normal_bg ==# '')       | let g:normal_bg       = 'NONE' | endif
+        if(g:normal_fg ==# '')       | let g:normal_fg       = 'NONE' | endif
+        if(g:normal_termbg ==# '')   | let g:normal_termbg   = 'NONE' | endif
+        if(g:normal_termfg ==# '')   | let g:normal_termfg   = 'NONE' | endif
+        " exec 'highlight! Normal_before guifg='.g:normal_fg.' guibg='.g:normal_bg
+
         " set termguicolors | " When on, uses highlight-guifg and highlight-guibg attributes in the terminal (=24bit color) incompatible with nvim
         " set t_ut=
         " set up statusline, global and current window individually
@@ -164,14 +176,6 @@ augroup MAX_FANCY_LINE
         setlocal statusline=%!UpdateStatus(g:group_active)
         " set up the tabline (match colors)
         set tabline=%!UpdateTabline(g:group_tabline)
-
-        " otherwise 'bold' can mess up icon sizes and I do not know why
-        " highlight! StatusLine cterm=reverse
-        " exec 'highlight! User3 guifg=#D2A032 guibg='.l:fgcolor
-
-        " workaround for VertSplit looking as a repeated slash, because its an
-        " italic bar...
-        " highlight! VertSplit gui=NONE cterm=NONE term=NONE
     endfunction
     call ApplyColorScheme()
 
