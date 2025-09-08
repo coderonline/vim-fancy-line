@@ -3,7 +3,6 @@
 augroup MAX_FANCY_LINE
     set noshowmode    | " mode would otherwise be shown twice- in lightline and below. We want to deactivate one.
     set laststatus=2  | " required by AirLine and Lightline, without status line does not appear until a window split
-    highlight! TabLineFill guibg=NONE
 
 
 
@@ -152,8 +151,9 @@ augroup MAX_FANCY_LINE
     endif
 
     function! ApplyColorScheme()
-        exec "highlight! StatusLine   guifg=NONE gui=NONE cterm=NONE"
-        exec "highlight! StatusLineNC guifg=NONE gui=NONE cterm=NONE"
+        highlight! StatusLine   guifg=NONE gui=NONE cterm=NONE
+        highlight! StatusLineNC guifg=NONE gui=NONE cterm=NONE
+        highlight! TabLineFill  guifg=NONE gui=NONE cterm=NONE
         " exec "highlight! TabLine      guifg=NONE guibg=NONE"
         " workaround for VertSplit looking as a repeated slash, because its an
         " italic bar...
